@@ -62,10 +62,9 @@ El sistema usa JWT para autenticar a los usuarios. Los tokens deben enviarse en 
 - Notificaciones en tiempo real.
 
 ## 📌 Enlaces Relacionados
-**Repositorio Backend**
+**Repositorio Frontend**
 - Frontend: https://github.com/alvaroMartinez13/spring-acme-frontend
-- Hash: dd1b46820f02d11770a663b40e39596c90ceff3a
-- 
+- Hash: dd1b46820f02d11770a663b40e39596c90ceff3a -> El hash siguiente es, ya que si tomo el hash del Backend al Frontend, así que él tendrá uno nuevo, y ahí se genera un bucle.
+  
 ## 📒 Creado Por
 - Alvaro martinez
-
