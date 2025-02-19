@@ -1,6 +1,7 @@
 package com.project.spring_acme_backend.Controllers.Posts;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,9 +61,12 @@ public class PostController {
     }
 
     @GetMapping("/myPosts/{username}")
-    public ResponseEntity<List<Posts>> getMyPosts(@PathVariable String username) {
+    public ResponseEntity<List<PostDTO>> getMyPosts(@PathVariable String username) {
         List<Posts> posts = postService.getMyPosts(username);
-        return ResponseEntity.ok(posts);
+        List<PostDTO> myPosts = posts.stream()
+            .map(PostDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(myPosts);
     }
 
     @GetMapping("/following/desc/{username}")
