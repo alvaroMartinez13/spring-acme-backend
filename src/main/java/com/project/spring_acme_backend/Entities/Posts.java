@@ -6,32 +6,40 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "posts")
 @Builder
-public class Post {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Posts {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     private String imageUrl;
 
-    @Column(columnDefinition = "TEXT CHECK(LENGTH(description) BETWEEN 5 AND 500)")
+    @Column(nullable = false, length = 500)
     private String description;
 
     @Column(nullable = false)
@@ -40,21 +48,26 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Likes> likes;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comments> comments;
+
+    @ManyToMany
+    @JoinTable(name = "Post_Tag", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tags> tags;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-    }
-
-    @PrePersist
-    protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -64,11 +77,11 @@ public class Post {
         this.id = id;
     }
 
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Users user) {
         this.user = user;
     }
 
@@ -104,22 +117,28 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
-    public List<Like> getLikes() {
+    public List<Likes> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<Like> likes) {
+    public void setLikes(List<Likes> likes) {
         this.likes = likes;
     }
 
-    public List<Comment> getComments() {
+    public List<Comments> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<Comments> comments) {
         this.comments = comments;
     }
 
-    
+    public List<Tags> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tags> tags) {
+        this.tags = tags;
+    }
 
 }

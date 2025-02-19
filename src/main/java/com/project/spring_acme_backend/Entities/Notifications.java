@@ -1,47 +1,45 @@
 package com.project.spring_acme_backend.Entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Builder;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "notifications")
 @Builder
-public class Comment {
+public class Notifications {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Users sender;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comment parentComment;
-
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> replies;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private Users receiver;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    private String subject;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false)
+    private Boolean isRead;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -52,9 +50,11 @@ public class Comment {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.isRead = false;
     }
 
-    @PrePersist
+    @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
@@ -67,44 +67,44 @@ public class Comment {
         this.id = id;
     }
 
-    public Post getPost() {
-        return post;
+    public Users getSender() {
+        return sender;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setSender(Users sender) {
+        this.sender = sender;
     }
 
-    public User getUser() {
-        return user;
+    public Users getReceiver() {
+        return receiver;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setReceiver(Users receiver) {
+        this.receiver = receiver;
     }
 
-    public Comment getParentComment() {
-        return parentComment;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setParentComment(Comment parentComment) {
-        this.parentComment = parentComment;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public List<Comment> getReplies() {
-        return replies;
+    public String getDescription() {
+        return description;
     }
 
-    public void setReplies(List<Comment> replies) {
-        this.replies = replies;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getContent() {
-        return content;
+    public Boolean getIsRead() {
+        return isRead;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
     }
 
     public LocalDateTime getCreatedAt() {
