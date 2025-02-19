@@ -3,6 +3,9 @@
 
 Este es el backend de la aplicación Social Leaf, una red social donde los usuarios pueden compartir publicaciones, interactuar con comentarios y reacciones, y gestionar su red de seguidores.
 
+## 📖 Video Presentación: 
+- https://youtu.be/0aVjp4okyFU
+
 ## 🚀 Tecnologías Utilizadas
 - **Spring Boot**
 - **Spring Security** (Autenticación)
